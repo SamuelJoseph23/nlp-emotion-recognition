@@ -1,126 +1,120 @@
-# Emotion Detection from Text Using Deep Learning
+# BERT-based Emotion Recognition Pipeline
 
-A deep learning and natural language processing (NLP) solution for classifying emotions from text messages, tweets, or sentences. The project features a complete training and prediction pipeline based on a Bidirectional LSTM model, custom text preprocessing, robust evaluation, and easy extension to web or CLI tools.
+## Overview
+
+This project provides a fully reproducible pipeline for text-based emotion detection using BERT and modern NLP preprocessing. Includes:
+- Dataset merging
+- Advanced preprocessing (including negation handling)
+- Automatic negation-based data augmentation
+- Model training and interactive/manual inference (CLI or web)
 
 ---
 
 ## Features
 
-- **Dataset Handling:** Loads and combines train.csv, test.csv, and val.csv with auto column detection (supports standard emotion datasets in CSV format).
-- **Smart Preprocessing:** Cleans text, performs lemmatization, and applies emotion-aware stopword filtering. Handles negation (e.g., "not happy" ≠ "happy") for realistic emotion modeling.
-- **Tokenization & Splitting:** Keras tokenization, sequence padding, categorical label encoding, and stratified train/test splits.
-- **Model Architecture:** Bidirectional LSTM (Keras/TensorFlow) with dropout, L2 regularization, batch normalization, and class weighting to reduce overfitting and improve generalization.
-- **Training:** Aggressive early stopping, model checkpointing, and adaptive learning rate reduction.
-- **Evaluation:** Metrics, classification report, and visualizations including training curves and confusion matrix.
-- **Prediction Tool:** Interactive CLI to predict emotions from sample or custom sentences, with probabilistic outputs.
-- **Deployment Ready:** Code is modular for easy conversion to a Streamlit or Flask web application.
+- **Unified data preparation script:** Combines, preprocesses, and augments emotion datasets.
+- **Flexible CSV input:** Accepts and merges standard emotion datasets (e.g. `train.csv`, `test.csv`, `val.csv`).
+- **Preprocessing:** Lemmatization, proper stopword handling, explicit negation marking.
+- **Augmentation:** Adds robust negated phrase samples for each emotion class to boost performance on tricky text.
+- **BERT workflow:** Scripted, interactive, and web app interfaces for batch or real-time emotion detection.
 
 ---
 
-## Folder Structure
+## Repository Structure
 
-```plaintext
-emotion-detection-lstm/
+.
 ├── data/
-│   ├── train.csv
-│   ├── test.csv
-│   ├── val.csv
-│   ├── combined_emotions.csv
-│   └── final_data.csv
-├── models/
-│   ├── tokenizer.pkl
-│   ├── label_encoder.pkl
-│   ├── config.pkl
-│   ├── X_train.npy
-│   ├── X_test.npy
-│   ├── y_train.npy
-│   ├── y_test.npy
-│   ├── emotion_model_untrained.keras
-│   ├── emotion_model_final.keras
-│   ├── best_model.keras
-│   └── training_history.pkl
-├── visualizations/
-│   ├── emotion_distribution.png
-│   ├── text_length.png
-│   ├── word_count.png
-│   ├── training_history.png
-│   └── confusion_matrix.png
-├── 01_load_data.py
-├── 02_visualize_data.py
-├── 03_preprocessing.py
-├── 04_tokenization.py
-├── 05_build_model.py
-├── 06_train_model.py
-├── 07_evaluate_model.py
-├── 08_predict.py
-├── setup_nltk.py
+│ ├── train.csv
+│ ├── test.csv
+│ ├── val.csv
+│ ├── final_data.csv # Optional: raw/merged input
+│ └── final_data_aug.csv # Output: run after prepare_data.py
+├── prepare_data.py # Data pipeline: load, preprocess, augment
+├── bert_emotion.py # Model training & CLI inference
 ├── requirements.txt
 ├── README.md
-└── .gitignore
-```
+└── bert_emotion_model/
+└── ... (saved model after training)
 
 
 ---
 
-## Quick Start
+## Setup
 
-**1. Setup and Install Dependencies**
-python -m venv venv
-source venv/bin/activate # or venv\Scripts\activate (Windows)
-pip install --upgrade pip
+### 1. Install requirements
 pip install -r requirements.txt
-python setup_nltk.py
 
 
-**2. Prepare Data**
-- Download or place train.csv, test.csv, val.csv in `data/`.
-- Run:
-python 01_load_data.py
-python 02_visualize_data.py
-
-
-**3. Preprocess and Train**
-python 03_preprocessing.py
-python 04_tokenization.py
-python 05_build_model.py
-python 06_train_model.py
-
-
-**4. Evaluate Results**
-python 07_evaluate_model.py
-
-
-**5. Predict Emotions (CLI)**
-python 08_predict.py
+### 2. Download NLTK Data (first time only)
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
 
 
 ---
 
-## Model & Approach
+## Data Preparation
 
-- **Preprocessing:** Cleans informal text, removes noise but preserves critical emotional and negation words. Implements custom negation handling (`NOT_` tags around negated words).
-- **LSTM Model:** A bidirectional LSTM network is used for its ability to learn long-range dependencies and context within text. Dropout and L2 regularization prevent overfitting.
-- **Class Weights:** Handles class imbalance for multi-emotion datasets.
-- **Early Stopping:** Avoids overfitting by monitoring validation loss.
-- **Performance:** Expected 85–90% accuracy (can vary based on dataset/domain).
+Run the unified script to preprocess and augment data:
+python prepare_data.py
+
+- Output: `data/final_data_aug.csv` for model training.
 
 ---
 
-## Deployment
+## Model Training
 
-- The repository is ready to be expanded into a web application using Streamlit or Flask (see comments in `08_predict.py`).
-- For online demos, export as a HuggingFace Space or deploy with Streamlit Cloud.
+Train the BERT emotion classifier interactively:
+python bert_emotion.py
+
+- Choose `1` for model training.
+- The trained model and tokenizer are saved in `bert_emotion_model/`.
+
+---
+
+## Inference
+
+### **Command-line emotion detection:**
+python bert_emotion.py
+
+- Choose `2` for interactive detection.
+- Type sentences and press Enter for results.
+
+### **(Optional) Web App:**
+- If you have `app.py` (Streamlit), run:
+
+streamlit run app.py
+
 
 ---
 
 ## Requirements
 
-- Python 3.7+
-- TensorFlow, scikit-learn, NLTK, pandas, matplotlib, seaborn (see `requirements.txt`)
+pandas
+nltk
+torch
+transformers
+scikit-learn
+accelerate
+
+Add `streamlit` if you demo as a web app.
 
 ---
 
-## Credits
+## Tips
 
-- Dataset: [Parul Pandey's Emotion Dataset on Kaggle](https://www.kaggle.com/datasets/parulpandey/emotion-dataset)
-- Model and code: Developed by Samuel Joseph, Jaiden Dennis, Sunith K
+- Add or tune emotion labels in `prepare_data.py` as needed.
+- Full GPU support if PyTorch w/ CUDA is installed.
+- For other languages/datasets, adapt preprocessing and label mapping.
+
+---
+
+## License
+
+MIT License (or specify your license)
+
+---
+
+_Questions? PRs and issues welcome!_
