@@ -46,17 +46,13 @@ pip install -r requirements.txt
 
 
 ### 2. Download NLTK Data (first time only)
-
+```
 import nltk
-
 nltk.download('punkt')
-
 nltk.download('stopwords')
-
 nltk.download('wordnet')
-
 nltk.download('omw-1.4')
-
+```
 
 ---
 
@@ -96,14 +92,14 @@ streamlit run app.py
 ---
 
 ## Requirements
-
+```
 pandas
 nltk
 torch
 transformers
 scikit-learn
 accelerate
-
+```
 Add `streamlit` if you demo as a web app.
 
 ---
