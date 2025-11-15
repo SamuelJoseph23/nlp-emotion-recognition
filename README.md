@@ -22,7 +22,7 @@ This project provides a fully reproducible pipeline for text-based emotion detec
 
 ## Repository Structure
 
-.
+```
 ├── data/
 │ ├── train.csv
 │ ├── test.csv
@@ -35,7 +35,7 @@ This project provides a fully reproducible pipeline for text-based emotion detec
 ├── README.md
 └── bert_emotion_model/
 └── ... (saved model after training)
-
+```
 
 ---
 
