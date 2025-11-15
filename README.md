@@ -85,9 +85,9 @@ python bert_emotion.py
 
 ### **(Optional) Web App:**
 - If you have `app.py` (Streamlit), run:
-
+```
 streamlit run app.py
-
+```
 
 ---
 
